@@ -76,5 +76,23 @@ class PlantByID(Resource):
             return {'error': str(e)}, 500
     
 api.add_resource(PlantByID, '/plants/<int:id>') #  Add the new resource to the API
+
+class DeleteDouglasFir(Resource):
+    def delete(self):
+        try:
+            plants = Plant.query.filter(Plant.name == 'Douglas Fir').all()
+            if plants: #  If Douglas Fir plants are found
+                for plant in plants:
+                    db.session.delete(plant)
+                db.session.commit()
+                return {'message': 'All Douglas Fir plants deleted'}, 200
+            else:
+                return {'error': 'No Douglas Fir plants found'}, 404
+        except Exception as e:
+            return {'error': str(e)}, 500
+
+api.add_resource(DeleteDouglasFir, '/plants/delete_douglas_fir')
+
 if __name__ == '__main__':
     app.run(port=5556, debug=True)
+
